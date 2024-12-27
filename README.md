@@ -1,8 +1,8 @@
-# Open-LLM2Classifer
+# Open-LLM2Classifier
 
-# Transforming DistilBERT into a Sentiment Classifier for IMDb Reviews
+## Transforming DistilBERT into a Sentiment Classifier for IMDb Reviews
 
-## Table of Contents
+### Table of Contents
 1. [Overview](#overview)
 2. [Dataset Documentation](#dataset-documentation)
 3. [Model Selection and Preprocessing](#model-selection-and-preprocessing)
@@ -74,10 +74,9 @@ The main objective of this project is to adapt an open-source Language Model (LL
 ## Transforming DistilBERT into a Classifier
 
 ### Modifying the Output Layer
-- Replaced the original output layer with a linear classification head for binary sentiment classification.
-
-### Implementing Categorical Cross-Entropy Loss
-- Used Hugging Face's `Trainer` class, which incorporates cross-entropy loss.
+To transform DistilBERT into a sentiment classifier, the following steps were taken:
+- **Replaced the original output layer** with a linear classification head for binary sentiment classification (Positive/Negative).
+- **Implemented Categorical Cross-Entropy Loss** using Hugging Face's `Trainer` class, which automatically integrates loss calculation.
 
 ### Updating the Training Procedure
 - **Hyperparameters:**
@@ -86,7 +85,7 @@ The main objective of this project is to adapt an open-source Language Model (LL
   - Epochs: `3`
   - Weight Decay: `0.01`
   - Mixed Precision: `fp16=True`
-- **Trainer Configuration:**
+- **Trainer Configuration:** 
   - Integrated model, training arguments, tokenized datasets, and custom metrics.
 
 ---
@@ -98,12 +97,12 @@ The main objective of this project is to adapt an open-source Language Model (LL
 - **Libraries:** PyTorch, Transformers, Datasets, Scikit-learn.
 
 ### Training Execution
+
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
 model.to(device)
 trainer.train()
 
-## Performance Metrics Across Epochs
-
+### Performance Metrics Across Epochs
 | Epoch | Training Loss | Validation Loss | Accuracy | Precision | Recall | F1-Score |
 |-------|---------------|-----------------|----------|-----------|--------|----------|
 | 1     | 0.2468        | 0.8994          | 0.8988   | 0.8992    | 0.8990 | 0.8990   |
@@ -145,12 +144,11 @@ trainer.train()
 
 ### Prompt-Based Classification Using GPT-3.5
 **Methodology:**
-- Employed OpenAI's GPT-3.5 (gpt-3.5-turbo) to classify IMDb reviews by crafting specific prompts.  
-**Example Prompt:**
+- Employed OpenAI's GPT-3.5 (gpt-3.5-turbo) to classify IMDb reviews by crafting specific prompts.
 
-The following text is a movie review. Classify it as either "Positive" or "Negative" based on the sentiment.
-Review: "I absolutely loved this movie! The performances were stellar and the story was gripping."
-Sentiment: Positive
+**Example Prompt:**
+The following text is a movie review. Classify it as either "Positive" or "Negative" based on the sentiment. Review: "I absolutely loved this movie! The performances were stellar and the story was gripping." Sentiment: Positive
+
 
 - Iterated over the evaluation dataset, sending each review to the GPT model and recording its prediction.
 - Incorporated a delay (`time.sleep(1)`) to adhere to API rate limits.
@@ -164,9 +162,8 @@ Sentiment: Positive
 | **Recall**  | 0.9181                | 0.8605               |
 | **F1-Score**| 0.9135                | 0.9085               |
 
----
-
 ### Performance Comparison
+
 | **Aspect**         | **Fine-Tuned DistilBERT**  | **GPT-3.5 Prompt-Based** |
 |---------------------|---------------------------|--------------------------|
 | Accuracy            | Slightly lower at 91.34% | Slightly higher at 91.8% |
@@ -178,3 +175,58 @@ Sentiment: Positive
 - The fine-tuned DistilBERT model demonstrates **higher recall**, making it better for tasks where capturing all relevant instances is critical.
 - The GPT-3.5 prompt-based approach excels in **precision**, which is useful when false positives need to be minimized.
 - Both approaches provide comparable F1-scores, showcasing balanced performance.
+
+---
+
+## Challenges and Future Work
+
+### Challenges:
+- **Imbalanced Dataset:** One challenge was the imbalance between positive and negative reviews in the IMDb dataset. This could affect model performance, especially in terms of precision and recall. We used a variety of metrics to ensure balanced evaluation, but further techniques like oversampling or class weighting could improve model fairness.
+- **Training Efficiency:** Fine-tuning a large model like DistilBERT, even though efficient, required significant computational resources. Future work could explore quantization or pruning methods to make the model even more resource-efficient.
+
+### Future Work:
+- **Fine-Grained Sentiment Analysis:** Extend the model to multi-class sentiment classification, capturing a wider range of sentiment nuances.
+- **Additional Datasets:** Test the model on other sentiment analysis datasets to improve generalization.
+
+
+- Iterated over the evaluation dataset, sending each review to the GPT model and recording its prediction.
+- Incorporated a delay (`time.sleep(1)`) to adhere to API rate limits.
+
+### Evaluation Metrics:
+
+| Metric      | Fine-Tuned DistilBERT | GPT-3.5 Prompt-Based |
+|-------------|------------------------|-----------------------|
+| **Accuracy**| 91.34%                | 91.8%                |
+| **Precision**| 0.9089               | 0.9622               |
+| **Recall**  | 0.9181                | 0.8605               |
+| **F1-Score**| 0.9135                | 0.9085               |
+
+### Performance Comparison
+
+| **Aspect**         | **Fine-Tuned DistilBERT**  | **GPT-3.5 Prompt-Based** |
+|---------------------|---------------------------|--------------------------|
+| Accuracy            | Slightly lower at 91.34% | Slightly higher at 91.8% |
+| Precision           | Lower at 0.9089          | Higher at 0.9622         |
+| Recall              | Higher at 0.9181         | Lower at 0.8605          |
+| F1-Score            | Comparable at 0.9135     | Comparable at 0.9085     |
+
+### Conclusion:
+- The fine-tuned DistilBERT model demonstrates **higher recall**, making it better for tasks where capturing all relevant instances is critical.
+- The GPT-3.5 prompt-based approach excels in **precision**, which is useful when false positives need to be minimized.
+- Both approaches provide comparable F1-scores, showcasing balanced performance.
+
+---
+
+## Challenges and Future Work
+
+### Challenges:
+- **Imbalanced Dataset:** One challenge was the imbalance between positive and negative reviews in the IMDb dataset. This could affect model performance, especially in terms of precision and recall. We used a variety of metrics to ensure balanced evaluation, but further techniques like oversampling or class weighting could improve model fairness.
+- **Training Efficiency:** Fine-tuning a large model like DistilBERT, even though efficient, required significant computational resources. Future work could explore quantization or pruning methods to make the model even more resource-efficient.
+
+### Future Work:
+- **Fine-Grained Sentiment Analysis:** Extend the model to multi-class sentiment classification, capturing a wider range of sentiment nuances.
+- **Additional Datasets:** Test the model on other sentiment analysis datasets to improve generalization.
+
+
+
+

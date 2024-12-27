@@ -98,7 +98,6 @@ The main objective of this project is to adapt an open-source Language Model (LL
 - **Libraries:** PyTorch, Transformers, Datasets, Scikit-learn.
 
 ### Training Execution
-```python
 model = DistilBertForSequenceClassification.from_pretrained("distilbert-base-uncased", num_labels=2)
 model.to(device)
 trainer.train()
